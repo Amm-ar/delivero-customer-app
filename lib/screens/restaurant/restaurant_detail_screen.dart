@@ -5,6 +5,7 @@ import '../../config/theme.dart';
 import '../../config/constants.dart';
 import '../../models/restaurant_model.dart';
 import '../../models/menu_item_model.dart';
+import '../../models/cart_item_model.dart';
 import '../../services/restaurant_service.dart';
 import '../../providers/cart_provider.dart';
 import '../../widgets/menu_item_card.dart';
@@ -267,12 +268,11 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
     
     // Simple add to cart (in production, show customization dialog if item has customizations)
-    final cartItem = CartItem(
+    final cartItem = CartItemModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      menuItemId: item.id,
+      menuItemId: item.id!,
       name: item.name,
-      price: item.finalPrice,
-      image: item.image,
+      price: item.price,
       quantity: 1,
     );
 

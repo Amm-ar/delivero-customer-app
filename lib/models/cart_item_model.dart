@@ -1,4 +1,4 @@
-class CartItem {
+class CartItemModel {
   final String id;
   final String menuItemId;
   final String name;
@@ -8,7 +8,7 @@ class CartItem {
   List<String> selectedCustomizations;
   double get totalPrice => price * quantity;
 
-  CartItem({
+  CartItemModel({
     required this.id,
     required this.menuItemId,
     required this.name,
@@ -26,7 +26,7 @@ class CartItem {
     };
   }
 
-  CartItem copyWith({
+  CartItemModel copyWith({
     String? id,
     String? menuItemId,
     String? name,
@@ -35,7 +35,7 @@ class CartItem {
     int? quantity,
     List<String>? selectedCustomizations,
   }) {
-    return CartItem(
+    return CartItemModel(
       id: id ?? this.id,
       menuItemId: menuItemId ?? this.menuItemId,
       name: name ?? this.name,

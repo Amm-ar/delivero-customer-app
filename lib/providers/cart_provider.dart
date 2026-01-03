@@ -3,10 +3,10 @@ import '../models/cart_item_model.dart';
 import '../models/restaurant_model.dart';
 
 class CartProvider with ChangeNotifier {
-  final Map<String, List<CartItem>> _items = {};
+  final Map<String, List<CartItemModel>> _items = {};
   Restaurant? _currentRestaurant;
 
-  Map<String, List<CartItem>> get items => _items;
+  Map<String, List<CartItemModel>> get items => _items;
   Restaurant? get currentRestaurant => _currentRestaurant;
   
   int get itemCount {
@@ -37,14 +37,14 @@ class CartProvider with ChangeNotifier {
     return subtotal + deliveryFee + serviceFee;
   }
 
-  List<CartItem> getRestaurantItems(String restaurantId) {
+  List<CartItemModel> getRestaurantItems(String restaurantId) {
     return _items[restaurantId] ?? [];
   }
 
   bool get isEmpty => _items.isEmpty;
 
   // Add item to cart
-  void addItem(String restaurantId, Restaurant restaurant, CartItem item) {
+  void addItem(String restaurantId, Restaurant restaurant, CartItemModel item) {
     // If switching restaurants, clear cart
     if (_currentRestaurant != null && _currentRestaurant!.id != restaurantId) {
       clearCart();

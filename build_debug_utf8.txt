@@ -1,0 +1,155 @@
+﻿Resolving dependencies...
+Downloading packages...
+  _flutterfire_internals 1.3.35 (1.3.65 available)
+  archive 3.6.1 (4.0.7 available)
+  characters 1.4.0 (1.4.1 available)
+  firebase_core 2.32.0 (4.3.0 available)
+  firebase_core_platform_interface 5.4.2 (6.0.2 available)
+  firebase_core_web 2.24.0 (3.3.1 available)
+  firebase_messaging 14.7.10 (16.1.0 available)
+  firebase_messaging_platform_interface 4.5.37 (4.7.5 available)
+  firebase_messaging_web 3.5.18 (4.1.1 available)
+  fl_chart 0.65.0 (1.1.1 available)
+  flutter_lints 3.0.2 (6.0.0 available)
+  flutter_local_notifications 16.3.3 (19.5.0 available)
+  flutter_local_notifications_linux 4.0.1 (6.0.0 available)
+  flutter_local_notifications_platform_interface 7.2.0 (9.1.0 available)
+  flutter_map 7.0.2 (8.2.2 available)
+  flutter_secure_storage 9.2.4 (10.0.0 available)
+  flutter_secure_storage_linux 1.2.3 (3.0.0 available)
+  flutter_secure_storage_macos 3.1.3 (4.0.0 available)
+  flutter_secure_storage_platform_interface 1.1.2 (2.0.1 available)
+  flutter_secure_storage_web 1.2.1 (2.1.0 available)
+  flutter_secure_storage_windows 3.1.2 (4.1.0 available)
+  flutter_stripe 10.2.0 (12.1.1 available)
+  freezed_annotation 2.4.4 (3.1.0 available)
+  geocoding 3.0.0 (4.0.0 available)
+  geocoding_android 3.3.1 (4.0.1 available)
+  geocoding_platform_interface 3.2.0 (5.0.0 available)
+  geolocator 13.0.4 (14.0.2 available)
+  geolocator_android 4.6.2 (5.0.2 available)
+  intl 0.18.1 (0.20.2 available)
+  js 0.6.7 (0.7.2 available)
+  lints 3.0.0 (6.0.0 available)
+  lottie 2.7.0 (3.3.2 available)
+  matcher 0.12.17 (0.12.18 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  meta 1.16.0 (1.17.0 available)
+  mgrs_dart 2.0.0 (3.0.0 available)
+  proj4dart 2.1.0 (3.0.0 available)
+  socket_io_client 2.0.3+1 (3.1.3 available)
+  socket_io_common 2.0.3 (3.1.1 available)
+  stripe_android 10.2.1 (12.1.0 available)
+  stripe_ios 10.2.0 (12.1.0 available)
+  stripe_platform_interface 10.2.0 (12.1.1 available)
+  test_api 0.7.6 (0.7.8 available)
+  timezone 0.9.4 (0.10.1 available)
+  unicode 0.3.1 (1.1.8 available)
+Got dependencies!
+45 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleRelease'...                        
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 3692 bytes (99.8% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+flutter : warning: 
+[options] source value 8 
+is obsolete and will be 
+removed in a future 
+release
+At line:1 char:1
++ flutter build apk 
+--release > 
+build_debug.log 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (w  
+  arning: [optio... fut   
+ ure release:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+warning: [options] target 
+value 8 is obsolete and 
+will be removed in a 
+future release
+warning: [options] To 
+suppress warnings about 
+obsolete options, use 
+-Xlint:-options.
+C:\Users\Ammar\AppData\Loc
+al\Pub\Cache\hosted\pub.de
+v\flutter_local_notificati
+ons-16.3.3\android\src\mai
+n\java\com\dexterous\flutt
+erlocalnotifications\Flutt
+erLocalNotificationsPlugin
+.java:1033: error: 
+reference to bigLargeIcon 
+is ambiguous
+      bigPictureStyle.bigL
+argeIcon(null);
+                     ^
+  both method 
+bigLargeIcon(Bitmap) in 
+BigPictureStyle and 
+method bigLargeIcon(Icon) 
+in BigPictureStyle match
+1 error
+3 warnings
+
+FAILURE: Build failed 
+with an exception.
+
+* What went wrong:
+Execution failed for task 
+':flutter_local_notificati
+ons:compileReleaseJavaWith
+Javac'.
+> Compilation failed; see 
+the compiler output below.
+  warning: [options] To 
+suppress warnings about 
+obsolete options, use 
+-Xlint:-options.warning: 
+[options] source value 8 
+is obsolete and will be 
+removed in a future 
+releasewarning: [options] 
+target value 8 is 
+obsolete and will be 
+removed in a future releas
+eC:\Users\Ammar\AppData\Lo
+cal\Pub\Cache\hosted\pub.d
+ev\flutter_local_notificat
+ions-16.3.3\android\src\ma
+in\java\com\dexterous\flut
+terlocalnotifications\Flut
+terLocalNotificationsPlugi
+n.java:1033: error: 
+reference to bigLargeIcon 
+is ambiguous
+        bigPictureStyle.bi
+gLargeIcon(null);
+                       ^
+    both method 
+bigLargeIcon(Bitmap) in 
+BigPictureStyle and 
+method bigLargeIcon(Icon) 
+in BigPictureStyle match
+  1 error
+  3 warnings
+
+* Try:
+> Check your code and 
+dependencies to fix the 
+compilation error(s)
+> Run with --scan to get 
+full insights.
+
+BUILD FAILED in 32s
+Running Gradle task 'assembleRelease'...                           33.2s
+Gradle task 
+assembleRelease failed 
+with exit code 1

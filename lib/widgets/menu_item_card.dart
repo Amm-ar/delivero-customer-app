@@ -81,7 +81,7 @@ class MenuItemCard extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: AppColors.palmGreen.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(AppRadius.xs),
+                              borderRadius: BorderRadius.circular(4.0),
                             ),
                             child: Text(
                               tag,
@@ -111,7 +111,7 @@ class MenuItemCard extends StatelessWidget {
                           const SizedBox(width: 4),
                         ],
                         Text(
-                          '${AppConstants.currencySymbol} ${menuItem.finalPrice.toStringAsFixed(2)}',
+                          '${AppConstants.currencySymbol} ${menuItem.price.toStringAsFixed(2)}',
                           style: AppTextStyles.h4.copyWith(color: AppColors.nileBlue),
                         ),
                         const Spacer(),
