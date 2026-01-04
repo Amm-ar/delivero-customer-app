@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../config/constants.dart';
 import '../../providers/restaurant_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/restaurant_card.dart';
 import '../restaurant/restaurant_detail_screen.dart';
 
@@ -71,6 +72,9 @@ class _HomeTabState extends State<HomeTab> {
       Provider.of<RestaurantProvider>(context, listen: false).fetchRestaurants(refresh: true);
     });
   }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -148,39 +152,43 @@ class _HomeTabState extends State<HomeTab> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: AppConstants.cuisineTypes.map((cuisine) {
-                        final isSelected = Provider.of<RestaurantProvider>(context).selectedCuisine == cuisine;
-                        return GestureDetector(
-                          onTap: () {
-                            Provider.of<RestaurantProvider>(context, listen: false).setCuisine(isSelected ? null : cuisine);
-                          },
-                          child: Container(
-                            width: 90,
-                            margin: const EdgeInsets.only(right: AppSpacing.sm),
-                            decoration: BoxDecoration(
-                              color: isSelected ? AppColors.nileBlue : AppColors.desertSand,
-                              borderRadius: BorderRadius.circular(AppRadius.md),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.restaurant, 
-                                  color: isSelected ? Colors.white : AppColors.nileBlue, 
-                                  size: 32
+                        return Consumer<RestaurantProvider>(
+                          builder: (context, provider, _) {
+                            final isSelected = provider.selectedCuisine == cuisine;
+                            return GestureDetector(
+                              onTap: () {
+                                provider.setCuisine(isSelected ? null : cuisine);
+                              },
+                              child: Container(
+                                width: 90,
+                                margin: const EdgeInsets.only(right: AppSpacing.sm),
+                                decoration: BoxDecoration(
+                                  color: isSelected ? AppColors.nileBlue : AppColors.desertSand,
+                                  borderRadius: BorderRadius.circular(AppRadius.md),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  cuisine,
-                                  style: AppTextStyles.caption.copyWith(
-                                    color: isSelected ? Colors.white : AppColors.nileBlue,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.restaurant, 
+                                      color: isSelected ? Colors.white : AppColors.nileBlue, 
+                                      size: 32
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      cuisine,
+                                      style: AppTextStyles.caption.copyWith(
+                                        color: isSelected ? Colors.white : AppColors.nileBlue,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
+                              ),
+                            );
+                          }
                         );
                       }).toList(),
                     ),
@@ -236,7 +244,7 @@ class _HomeTabState extends State<HomeTab> {
                               children: [
                                 Icon(Icons.restaurant_menu, size: 48, color: AppColors.gray),
                                 const SizedBox(height: 16),
-                                Text(
+                                const Text(
                                   'No restaurants found',
                                   style: AppTextStyles.bodyLarge,
                                 ),
@@ -329,73 +337,74 @@ class ProfileTab extends StatelessWidget {
       ),
       body: Consumer<AuthProvider>(
         builder: (context, auth, child) => ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
-          // Profile header
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(AppRadius.md),
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.white,
-                  backgroundImage: auth.user?.avatar != null ? NetworkImage(auth.user!.avatar!) : null,
-                  child: auth.user?.avatar == null ? Icon(Icons.person, size: 40, color: AppColors.nileBlue) : null,
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        auth.user?.name ?? 'User Name',
-                        style: AppTextStyles.h3.copyWith(color: Colors.white),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        auth.user?.email ?? 'user@example.com',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                      ),
-                    ],
+          padding: const EdgeInsets.all(AppSpacing.md),
+          children: [
+            // Profile header
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.white,
+                    backgroundImage: auth.user?.avatar != null ? NetworkImage(auth.user!.avatar!) : null,
+                    child: auth.user?.avatar == null ? const Icon(Icons.person, size: 40, color: AppColors.nileBlue) : null,
                   ),
-                ),
-              ],
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          auth.user?.name ?? 'User Name',
+                          style: AppTextStyles.h3.copyWith(color: Colors.white),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          auth.user?.email ?? 'user@example.com',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          
-          const SizedBox(height: AppSpacing.lg),
-          
-          // Menu items
-          _buildMenuItem(Icons.location_on_outlined, 'Addresses', () {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Address management coming soon')));
-          }),
-          _buildMenuItem(Icons.payment_outlined, 'Payment Methods', () {
-             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment history coming soon')));
-          }),
-          _buildMenuItem(Icons.notifications_outlined, 'Notifications', () {
-             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Notification settings coming soon')));
-          }),
-          _buildMenuItem(Icons.help_outline, 'Help & Support', () {
-             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Support center coming soon')));
-          }),
-          _buildMenuItem(Icons.info_outline, 'About', () {
-             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Delivero Sudan v1.0.0')));
-          }),
-          _buildMenuItem(Icons.logout, 'Logout', () {
-            auth.logout();
-          }, color: AppColors.error),
-        ],
+            
+            const SizedBox(height: AppSpacing.lg),
+            
+            // Menu items
+            _buildMenuItem(context, Icons.location_on_outlined, 'Addresses', () {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Address management coming soon')));
+            }),
+            _buildMenuItem(context, Icons.payment_outlined, 'Payment Methods', () {
+               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment history coming soon')));
+            }),
+            _buildMenuItem(context, Icons.notifications_outlined, 'Notifications', () {
+               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Notification settings coming soon')));
+            }),
+            _buildMenuItem(context, Icons.help_outline, 'Help & Support', () {
+               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Support center coming soon')));
+            }),
+            _buildMenuItem(context, Icons.info_outline, 'About', () {
+               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Delivero Sudan v1.0.0')));
+            }),
+            _buildMenuItem(context, Icons.logout, 'Logout', () {
+              auth.logout();
+            }, color: AppColors.error),
+          ],
+        ),
       ),
     );
   }
-}
-  Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap, {Color? color}) {
+
+  Widget _buildMenuItem(BuildContext context, IconData icon, String title, VoidCallback onTap, {Color? color}) {
     return ListTile(
       leading: Icon(icon, color: color ?? AppColors.nileBlue),
       title: Text(title, style: TextStyle(color: color)),
