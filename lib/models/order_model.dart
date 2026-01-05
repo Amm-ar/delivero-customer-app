@@ -147,44 +147,52 @@ class Pricing {
 }
 
 class DeliveryAddress {
-  final String label;
-  final String address;
+  final String street;
+  final String city;
+  final String state;
+  final String? postalCode;
+  final String? instructions;
   final double latitude;
   final double longitude;
-  final String? instructions;
 
   DeliveryAddress({
-    required this.label,
-    required this.address,
+    required this.street,
+    required this.city,
+    required this.state,
+    this.postalCode,
+    this.instructions,
     required this.latitude,
     required this.longitude,
-    this.instructions,
   });
 
   factory DeliveryAddress.fromJson(Map<String, dynamic> json) {
     return DeliveryAddress(
-      label: json['label'] ?? '',
-      address: json['address'] ?? '',
-      latitude: json['location']?['coordinates']?[1]?.toDouble() ?? 0.0,
-      longitude: json['location']?['coordinates']?[0]?.toDouble() ?? 0.0,
+      street: json['street'],
+      city: json['city'],
+      state: json['state'],
+      postalCode: json['postalCode'],
       instructions: json['instructions'],
+      latitude: json['location']['coordinates'][1],
+      longitude: json['location']['coordinates'][0],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'label': label,
-      'address': address,
+      'street': street,
+      'city': city,
+      'state': state,
+      'postalCode': postalCode,
+      'instructions': instructions,
       'location': {
         'type': 'Point',
         'coordinates': [longitude, latitude],
       },
-      'instructions': instructions,
     };
   }
 
   String get fullAddress {
-    return address;
+    return '$street, $city, $state${postalCode != null ? ", $postalCode" : ""}';
   }
 }
 
