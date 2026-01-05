@@ -35,7 +35,8 @@ class OrderService {
         };
       }
     } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+      final message = e.toString().replaceFirst('Exception: ', '');
+      return {'success': false, 'message': message};
     }
   }
 
@@ -75,7 +76,8 @@ class OrderService {
         };
       }
     } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+      final message = e.toString().replaceFirst('Exception: ', '');
+      return {'success': false, 'message': message};
     }
   }
 
@@ -96,7 +98,8 @@ class OrderService {
         };
       }
     } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+      final message = e.toString().replaceFirst('Exception: ', '');
+      return {'success': false, 'message': message};
     }
   }
 
@@ -120,7 +123,8 @@ class OrderService {
         };
       }
     } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+      final message = e.toString().replaceFirst('Exception: ', '');
+      return {'success': false, 'message': message};
     }
   }
 }

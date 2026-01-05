@@ -57,6 +57,8 @@ class ApiService {
   Future<Response> get(String endpoint, {Map<String, dynamic>? queryParameters}) async {
     try {
       return await _dio.get(endpoint, queryParameters: queryParameters);
+    } on DioException catch (e) {
+      throw _handleError(e);
     } catch (e) {
       rethrow;
     }
@@ -66,6 +68,8 @@ class ApiService {
   Future<Response> post(String endpoint, {dynamic data}) async {
     try {
       return await _dio.post(endpoint, data: data);
+    } on DioException catch (e) {
+      throw _handleError(e);
     } catch (e) {
       rethrow;
     }
@@ -75,6 +79,8 @@ class ApiService {
   Future<Response> put(String endpoint, {dynamic data}) async {
     try {
       return await _dio.put(endpoint, data: data);
+    } on DioException catch (e) {
+      throw _handleError(e);
     } catch (e) {
       rethrow;
     }
@@ -84,8 +90,21 @@ class ApiService {
   Future<Response> delete(String endpoint) async {
     try {
       return await _dio.delete(endpoint);
+    } on DioException catch (e) {
+      throw _handleError(e);
     } catch (e) {
       rethrow;
     }
+  }
+
+  // Error handling helper
+  Exception _handleError(DioException error) {
+    if (error.response?.data != null && error.response!.data is Map) {
+      final message = error.response!.data['message'];
+      if (message != null) {
+        return Exception(message);
+      }
+    }
+    return Exception(error.message ?? 'Unknown API error');
   }
 }

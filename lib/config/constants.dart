@@ -34,21 +34,46 @@ class ApiConstants {
   static const Duration receiveTimeout = Duration(seconds: 30);
 
   // Helper to construct image URL safely
+  static const String defaultFoodImage = '$baseUrl/uploads/default-food.png';
+
   static String getImageUrl(String? imagePath) {
-    if (imagePath == null || imagePath.isEmpty) {
-      return '$baseUrl/uploads/default-food.png';
+    if (imagePath == null || imagePath.isEmpty || imagePath == 'default-food.png' || imagePath == 'default-restaurant.png') {
+      return defaultFoodImage;
     }
     
-    if (imagePath.startsWith('http')) return imagePath;
+    String path = imagePath;
     
-    // Normalize slashes
-    String path = imagePath.replaceAll('\\', '/');
+    // Normalize slashes first
+    path = path.replaceAll('\\', '/');
     
-    // Remove leading slash
-    if (path.startsWith('/')) path = path.substring(1);
+    // If it's already a full URL
+    if (path.startsWith('http')) {
+      // If it's a localhost URL, we need to extract the relative part and prepend our actual baseUrl
+      if (path.contains('localhost') || path.contains('127.0.0.1') || path.contains('10.0.2.2')) {
+        final uploadsIndex = path.indexOf('/uploads/');
+        if (uploadsIndex != -1) {
+          path = path.substring(uploadsIndex + 1); // Get 'uploads/...'
+        } else {
+          // If no uploads found but it's localhost, try to just replace the domain
+          final domainEnd = path.indexOf('/', 8); // Skip 'http://'
+          if (domainEnd != -1) {
+             return '$baseUrl${path.substring(domainEnd)}';
+          }
+          return path; // Fallback
+        }
+      } else {
+        return path; // External or already correct full URL
+      }
+    }
     
-    // Ensure uploads/ prefix
-    if (!path.startsWith('uploads/')) {
+    // Process relative path
+    // Remove leading slash if present
+    if (path.startsWith('/')) {
+      path = path.substring(1);
+    }
+    
+    // Ensure 'uploads/' prefix if it's missing (unless it's an API route or something else)
+    if (!path.startsWith('uploads/') && !path.startsWith('api/')) {
       path = 'uploads/$path';
     }
     

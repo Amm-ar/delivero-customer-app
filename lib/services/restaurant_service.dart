@@ -46,16 +46,11 @@ class RestaurantService {
           'total': response.data['total'],
           'pages': response.data['pages'],
         };
-      } else {
-        return {
-          'success': false,
-          'message': response.data['message'] ?? 'Failed to load restaurants'
-        };
-      }
-    } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+    } 
+    }catch (e) {
+      final message = e.toString().replaceFirst('Exception: ', '');
+      return {'success': false, 'message': message};
     }
-  }
 
   // Get single restaurant
   Future<Map<String, dynamic>> getRestaurant(String id) async {
@@ -74,7 +69,8 @@ class RestaurantService {
         };
       }
     } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+      final message = e.toString().replaceFirst('Exception: ', '');
+      return {'success': false, 'message': message};
     }
   }
 
@@ -111,7 +107,8 @@ class RestaurantService {
         };
       }
     } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+      final message = e.toString().replaceFirst('Exception: ', '');
+      return {'success': false, 'message': message};
     }
   }
 }

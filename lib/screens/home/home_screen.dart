@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../config/theme.dart';
 import '../../config/constants.dart';
 import '../../providers/restaurant_provider.dart';
@@ -482,8 +483,9 @@ class ProfileTab extends StatelessWidget {
                   CircleAvatar(
                     radius: 40,
                     backgroundColor: Colors.white,
-                    backgroundImage: auth.user?.avatar != null ? NetworkImage(auth.user!.avatar!) : null,
-                    child: auth.user?.avatar == null ? const Icon(Icons.person, size: 40, color: AppColors.nileBlue) : null,
+                    backgroundImage: CachedNetworkImageProvider(
+                      ApiConstants.getImageUrl(auth.user?.avatar),
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
