@@ -46,11 +46,17 @@ class RestaurantService {
           'total': response.data['total'],
           'pages': response.data['pages'],
         };
-    } 
-    }catch (e) {
+      } else {
+        return {
+          'success': false,
+          'message': response.data['message'] ?? 'Failed to load restaurants'
+        };
+      }
+    } catch (e) {
       final message = e.toString().replaceFirst('Exception: ', '');
       return {'success': false, 'message': message};
     }
+  }
 
   // Get single restaurant
   Future<Map<String, dynamic>> getRestaurant(String id) async {
