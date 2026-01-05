@@ -4,6 +4,7 @@ import '../../config/theme.dart';
 import '../../config/constants.dart';
 import '../../providers/restaurant_provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/order_provider.dart';
 import '../../providers/locale_provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/restaurant_card.dart';

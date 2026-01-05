@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/menu_item_model.dart';
+import '../providers/cart_provider.dart';
+import '../models/cart_item_model.dart';
+import '../config/theme.dart';
+import '../config/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../config/theme.dart';
-import '../../config/constants.dart';
-import '../../models/menu_item_model.dart';
 import '../../models/restaurant_model.dart';
 import '../../models/cart_item_model.dart';
 

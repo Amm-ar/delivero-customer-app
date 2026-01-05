@@ -96,7 +96,7 @@ class CartScreen extends StatelessWidget {
                     const SizedBox(height: AppSpacing.md),
                     
                     // Items List
-                    ...cart.items.values.map((item) => _buildCartItem(context, cart, item)),
+                    ...cart.getRestaurantItems(cart.currentRestaurant?.id ?? '').map((item) => _buildCartItem(context, cart, item)),
                     
                     const SizedBox(height: AppSpacing.lg),
                     
@@ -122,8 +122,8 @@ class CartScreen extends StatelessWidget {
         children: [
           Icon(Icons.shopping_cart_outlined, size: 100, color: AppColors.lightGray),
           const SizedBox(height: AppSpacing.lg),
-          Text(
-            AppLocalizations.of(context)!.cartEmpty,
+          const Text(
+            'Your cart is empty',
             style: AppTextStyles.h3,
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -142,6 +142,7 @@ class CartScreen extends StatelessWidget {
   }
 
   Widget _buildCartItem(BuildContext context, CartProvider cart, CartItemModel item) {
+    final restaurantId = cart.currentRestaurant?.id ?? '';
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.sm),
@@ -209,9 +210,9 @@ class CartScreen extends StatelessWidget {
                   constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   onPressed: () {
                     if (item.quantity > 1) {
-                      cart.updateQuantity(item.id, item.quantity - 1);
+                      cart.updateQuantity(restaurantId, item.id, item.quantity - 1);
                     } else {
-                      cart.removeItem(item.id);
+                      cart.removeItem(restaurantId, item.id);
                     }
                   },
                 ),
@@ -224,7 +225,7 @@ class CartScreen extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   onPressed: () {
-                    cart.updateQuantity(item.id, item.quantity + 1);
+                    cart.updateQuantity(restaurantId, item.id, item.quantity + 1);
                   },
                 ),
               ],
@@ -246,7 +247,7 @@ class CartScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppLocalizations.of(context)!.orderSummary, style: AppTextStyles.h4),
+          const Text('Order Summary', style: AppTextStyles.h4),
           const SizedBox(height: AppSpacing.md),
           _buildBillRow('Subtotal', cart.subtotal),
           _buildBillRow('Delivery Fee', cart.deliveryFee),
@@ -255,8 +256,8 @@ class CartScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                AppLocalizations.of(context)!.total,
+              const Text(
+                'Total',
                 style: AppTextStyles.h3,
               ),
               Text(

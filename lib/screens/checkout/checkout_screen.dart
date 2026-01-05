@@ -64,7 +64,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     final result = await orderProvider.createOrder(
       restaurantId: cart.currentRestaurant!.id,
-      items: cart.items.values.map((item) => item.toJson()).toList(),
+      items: cart.getOrderItems(cart.currentRestaurant!.id),
       deliveryAddress: deliveryAddress,
       paymentMethod: _paymentMethod,
     );
@@ -89,12 +89,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: const Text('Order Placed!'),
-        content: const Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.check_circle, color: AppColors.palmGreen, size: 60),
-            SizedBox(height: 16),
-            Text('Your order has been placed successfully. You can track it in the Orders tab.'),
+            const Icon(Icons.check_circle, color: AppColors.palmGreen, size: 60),
+            const SizedBox(height: 16),
+            const Text('Your order has been placed successfully. You can track it in the Orders tab.'),
           ],
         ),
         actions: [
@@ -117,7 +117,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
       body: Consumer2<CartProvider, AuthProvider>(
         builder: (context, cart, auth, child) {
-          if (cart.items.isEmpty) {
+          final items = cart.getRestaurantItems(cart.currentRestaurant?.id ?? '');
+          if (items.isEmpty) {
             return const Center(child: Text('Your cart is empty'));
           }
 
@@ -173,6 +174,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildOrderSummary(CartProvider cart) {
+    final items = cart.getRestaurantItems(cart.currentRestaurant?.id ?? '');
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
@@ -181,7 +183,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         border: Border.all(color: AppColors.lightGray.withOpacity(0.5)),
       ),
       child: Column(
-        children: cart.items.values.map((item) => Padding(
+        children: items.map((item) => Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
