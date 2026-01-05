@@ -4,6 +4,8 @@ import '../../config/theme.dart';
 import '../../config/constants.dart';
 import '../../providers/restaurant_provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/locale_provider.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widgets/restaurant_card.dart';
 import '../restaurant/restaurant_detail_screen.dart';
 
@@ -34,21 +36,21 @@ class _HomeScreenState extends State<HomeScreen> {
             _selectedIndex = index;
           });
         },
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.home_outlined),
+            activeIcon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long_outlined),
-            activeIcon: Icon(Icons.receipt_long),
-            label: 'Orders',
+            icon: const Icon(Icons.receipt_long_outlined),
+            activeIcon: const Icon(Icons.receipt_long),
+            label: AppLocalizations.of(context)!.orders,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outlined),
-            activeIcon: Icon(Icons.person),
-            label: 'Profile',
+            icon: const Icon(Icons.person_outlined),
+            activeIcon: const Icon(Icons.person),
+            label: AppLocalizations.of(context)!.profile,
           ),
         ],
       ),
@@ -119,7 +121,7 @@ class _HomeTabState extends State<HomeTab> {
                               Provider.of<RestaurantProvider>(context, listen: false).setSearch(value);
                             },
                             decoration: InputDecoration(
-                              hintText: 'Search restaurants or dishes...',
+                              hintText: AppLocalizations.of(context)!.searchHint,
                               prefixIcon: Icon(Icons.search, color: AppColors.gray),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(
@@ -144,7 +146,7 @@ class _HomeTabState extends State<HomeTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Categories
-                  Text('Categories', style: AppTextStyles.h3),
+                  Text(AppLocalizations.of(context)!.categories, style: AppTextStyles.h3),
                   const SizedBox(height: AppSpacing.md),
                   
                   SizedBox(
@@ -200,10 +202,10 @@ class _HomeTabState extends State<HomeTab> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Popular Restaurants', style: AppTextStyles.h3),
+                      Text(AppLocalizations.of(context)!.popularRestaurants, style: AppTextStyles.h3),
                       TextButton(
                         onPressed: () {},
-                        child: const Text('See All'),
+                        child: Text(AppLocalizations.of(context)!.seeAll),
                       ),
                     ],
                   ),
@@ -229,7 +231,7 @@ class _HomeTabState extends State<HomeTab> {
                               Text(provider.errorMessage!),
                               ElevatedButton(
                                 onPressed: () => provider.fetchRestaurants(refresh: true),
-                                child: const Text('Retry'),
+                                child: Text(AppLocalizations.of(context)!.retry),
                               ),
                             ],
                           ),
@@ -244,8 +246,8 @@ class _HomeTabState extends State<HomeTab> {
                               children: [
                                 Icon(Icons.restaurant_menu, size: 48, color: AppColors.gray),
                                 const SizedBox(height: 16),
-                                const Text(
-                                  'No restaurants found',
+                                Text(
+                                  AppLocalizations.of(context)!.noRestaurantsFound,
                                   style: AppTextStyles.bodyLarge,
                                 ),
                               ],
@@ -301,7 +303,7 @@ class OrdersTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Orders'),
+        title: Text(AppLocalizations.of(context)!.orders),
       ),
       body: Center(
         child: Column(
@@ -310,7 +312,7 @@ class OrdersTab extends StatelessWidget {
             Icon(Icons.receipt_long_outlined, size: 80, color: AppColors.gray),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'No orders yet',
+              AppLocalizations.of(context)!.noOrders,
               style: AppTextStyles.h3.copyWith(color: AppColors.gray),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -333,7 +335,7 @@ class ProfileTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(AppLocalizations.of(context)!.profile),
       ),
       body: Consumer<AuthProvider>(
         builder: (context, auth, child) => ListView(
@@ -380,22 +382,52 @@ class ProfileTab extends StatelessWidget {
             const SizedBox(height: AppSpacing.lg),
             
             // Menu items
-            _buildMenuItem(context, Icons.location_on_outlined, 'Addresses', () {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Address management coming soon')));
+            _buildMenuItem(context, Icons.language, AppLocalizations.of(context)!.language, () {
+               final provider = Provider.of<LocaleProvider>(context, listen: false);
+               showDialog(
+                 context: context,
+                 builder: (context) => AlertDialog(
+                   title: Text(AppLocalizations.of(context)!.language),
+                   content: Column(
+                     mainAxisSize: MainAxisSize.min,
+                     children: [
+                       ListTile(
+                         title: const Text('English'),
+                         onTap: () {
+                           provider.setLocale(const Locale('en'));
+                           Navigator.pop(context);
+                         },
+                         trailing: provider.locale.languageCode == 'en' ? const Icon(Icons.check, color: AppColors.nileBlue) : null,
+                       ),
+                       ListTile(
+                         title: const Text('العربية'),
+                         onTap: () {
+                           provider.setLocale(const Locale('ar'));
+                           Navigator.pop(context);
+                         },
+                         trailing: provider.locale.languageCode == 'ar' ? const Icon(Icons.check, color: AppColors.nileBlue) : null,
+                       ),
+                     ],
+                   ),
+                 ),
+               );
             }),
-            _buildMenuItem(context, Icons.payment_outlined, 'Payment Methods', () {
-               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment history coming soon')));
+            _buildMenuItem(context, Icons.location_on_outlined, AppLocalizations.of(context)!.addresses, () {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.comingSoon)));
             }),
-            _buildMenuItem(context, Icons.notifications_outlined, 'Notifications', () {
-               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Notification settings coming soon')));
+            _buildMenuItem(context, Icons.payment_outlined, AppLocalizations.of(context)!.paymentMethods, () {
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.comingSoon)));
             }),
-            _buildMenuItem(context, Icons.help_outline, 'Help & Support', () {
-               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Support center coming soon')));
+            _buildMenuItem(context, Icons.notifications_outlined, AppLocalizations.of(context)!.notifications, () {
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.comingSoon)));
             }),
-            _buildMenuItem(context, Icons.info_outline, 'About', () {
+            _buildMenuItem(context, Icons.help_outline, AppLocalizations.of(context)!.helpSupport, () {
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.comingSoon)));
+            }),
+            _buildMenuItem(context, Icons.info_outline, AppLocalizations.of(context)!.about, () {
                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Delivero Sudan v1.0.0')));
             }),
-            _buildMenuItem(context, Icons.logout, 'Logout', () {
+            _buildMenuItem(context, Icons.logout, AppLocalizations.of(context)!.logout, () {
               auth.logout();
             }, color: AppColors.error),
           ],
@@ -404,11 +436,11 @@ class ProfileTab extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(BuildContext context, IconData icon, String title, VoidCallback onTap, {Color? color}) {
+  Widget _buildMenuItem(BuildContext context, IconData icon, String title, VoidCallback onTap, {Color? color, Widget? trailing}) {
     return ListTile(
       leading: Icon(icon, color: color ?? AppColors.nileBlue),
       title: Text(title, style: TextStyle(color: color)),
-      trailing: Icon(Icons.chevron_right, color: AppColors.gray),
+      trailing: trailing ?? const Icon(Icons.chevron_right, color: AppColors.gray),
       onTap: onTap,
     );
   }

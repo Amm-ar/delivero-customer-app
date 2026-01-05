@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../config/constants.dart';
 import '../../providers/auth_provider.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../home/home_screen.dart';
 
@@ -50,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(authProvider.errorMessage ?? 'Registration failed'),
+          content: Text(authProvider.errorMessage ?? AppLocalizations.of(context)!.registrationFailed),
           backgroundColor: AppColors.error,
         ),
       );
@@ -61,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Account'),
+        title: Text(AppLocalizations.of(context)!.createAccount),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -73,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 // Header
                 Text(
-                  'Join Delivero',
+                  AppLocalizations.of(context)!.joinDelivero,
                   style: AppTextStyles.h2.copyWith(color: AppColors.nileBlue),
                   textAlign: TextAlign.center,
                 ),
@@ -81,7 +82,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: AppSpacing.sm),
                 
                 Text(
-                  'Start ordering from your favorite restaurants',
+                  AppLocalizations.of(context)!.startOrderingSubtitle,
                   style: AppTextStyles.bodyMedium.copyWith(color: AppColors.gray),
                   textAlign: TextAlign.center,
                 ),
@@ -92,13 +93,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Full Name',
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.fullNameLabel,
                     prefixIcon: Icon(Icons.person_outlined),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
+                      return AppLocalizations.of(context)!.enterName;
                     }
                     return null;
                   },
@@ -110,16 +111,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.emailLabel,
                     prefixIcon: Icon(Icons.email_outlined),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return AppLocalizations.of(context)!.enterEmail;
                     }
                     if (!value.contains('@')) {
-                      return 'Please enter a valid email';
+                      return AppLocalizations.of(context)!.validEmail;
                     }
                     return null;
                   },
@@ -131,13 +132,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone Number',
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.phoneLabel,
                     prefixIcon: Icon(Icons.phone_outlined),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
+                      return AppLocalizations.of(context)!.enterPhone;
                     }
                     return null;
                   },
@@ -150,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: AppLocalizations.of(context)!.passwordLabel,
                     prefixIcon: const Icon(Icons.lock_outlined),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -165,10 +166,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a password';
+                      return AppLocalizations.of(context)!.enterPassword;
                     }
                     if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
+                      return AppLocalizations.of(context)!.passwordLength;
                     }
                     return null;
                   },
@@ -181,7 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirmPassword,
                   decoration: InputDecoration(
-                    labelText: 'Confirm Password',
+                    labelText: AppLocalizations.of(context)!.confirmPasswordLabel,
                     prefixIcon: const Icon(Icons.lock_outlined),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -196,10 +197,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
+                      return AppLocalizations.of(context)!.confirmPasswordError;
                     }
                     if (value != _passwordController.text) {
-                      return 'Passwords do not match';
+                      return AppLocalizations.of(context)!.passwordsDoNotMatch;
                     }
                     return null;
                   },
@@ -221,7 +222,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                             )
-                          : const Text('Create Account'),
+                          : Text(AppLocalizations.of(context)!.createAccount),
                     );
                   },
                 ),
@@ -230,7 +231,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 
                 // Terms text
                 Text(
-                  'By creating an account, you agree to our Terms of Service and Privacy Policy',
+                  AppLocalizations.of(context)!.termsAgreement,
                   style: AppTextStyles.caption,
                   textAlign: TextAlign.center,
                 ),

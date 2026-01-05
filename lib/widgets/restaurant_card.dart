@@ -28,7 +28,7 @@ class RestaurantCard extends StatelessWidget {
             Stack(
               children: [
                 CachedNetworkImage(
-                  imageUrl: '${ApiConstants.baseUrl}/uploads/${restaurant.coverImage}',
+                  imageUrl: ApiConstants.getImageUrl(restaurant.coverImage),
                   height: 160,
                   width: double.infinity,
                   fit: BoxFit.cover,

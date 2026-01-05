@@ -32,6 +32,15 @@ class ApiConstants {
   // Timeouts
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
+
+  // Helper to construct image URL safely
+  static String getImageUrl(String imagePath) {
+    if (imagePath.startsWith('http')) return imagePath;
+    String path = imagePath;
+    if (path.startsWith('/')) path = path.substring(1);
+    if (!path.startsWith('uploads/')) path = 'uploads/$path';
+    return '$baseUrl/$path';
+  }
 }
 
 class AppConstants {

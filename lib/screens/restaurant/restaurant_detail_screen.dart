@@ -72,7 +72,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                 fit: StackFit.expand,
                 children: [
                   CachedNetworkImage(
-                    imageUrl: '${ApiConstants.baseUrl}/uploads/${widget.restaurant.coverImage}',
+                    imageUrl: ApiConstants.getImageUrl(widget.restaurant.coverImage),
                     fit: BoxFit.cover,
                     errorWidget: (context, url, error) => Container(
                       color: AppColors.desertSand,

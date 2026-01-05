@@ -36,7 +36,7 @@ class MenuItemCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.sm),
                 child: CachedNetworkImage(
-                  imageUrl: '${ApiConstants.baseUrl}/uploads/${menuItem.image}',
+                  imageUrl: ApiConstants.getImageUrl(menuItem.image),
                   width: 80,
                   height: 80,
                   fit: BoxFit.cover,
@@ -149,7 +149,7 @@ class MenuItemCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(AppRadius.md),
                   child: CachedNetworkImage(
-                    imageUrl: '${ApiConstants.baseUrl}/uploads/${menuItem.image}',
+                    imageUrl: ApiConstants.getImageUrl(menuItem.image),
                     width: double.infinity,
                     height: 150,
                     fit: BoxFit.cover,
