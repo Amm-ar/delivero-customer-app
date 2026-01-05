@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../config/theme.dart';
 import '../../config/constants.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/auth_provider.dart';
-import '../../models/user_model.dart';
+import '../../models/user_model.dart' as user_models;
 import '../../l10n/app_localizations.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -16,8 +17,8 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  String _paymentMethod = 'cash_on_delivery';
-  Address? _selectedAddress;
+  String _paymentMethod = 'cash';
+  user_models.Address? _selectedAddress;
   final _addressController = TextEditingController();
   final _labelController = TextEditingController(text: 'Home');
 
@@ -51,6 +52,44 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return;
     }
 
+    // Show loading while getting location
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Getting precise location...'), duration: Duration(seconds: 1)),
+      );
+    }
+
+    // Try to get precise location
+    user_models.Location? preciseLocation;
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+        final position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+          timeLimit: const Duration(seconds: 5),
+        );
+        preciseLocation = user_models.Location(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        );
+      } else {
+        // Request permission if not granted
+        final requestedPermission = await Geolocator.requestPermission();
+        if (requestedPermission == LocationPermission.always || requestedPermission == LocationPermission.whileInUse) {
+          final position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+            timeLimit: const Duration(seconds: 5),
+          );
+          preciseLocation = user_models.Location(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Error getting location: $e');
+    }
+
     final Map<String, dynamic> deliveryAddress = _selectedAddress != null
         ? _selectedAddress!.toJson()
         : {
@@ -58,9 +97,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             'address': _addressController.text,
             'location': {
               'type': 'Point',
-              'coordinates': [32.5332, 15.5007], // Default to Khartoum center for now
+              'coordinates': [32.5332, 15.5007], // Default to Khartoum center fallback
             }
           };
+
+    // Override with precise location if available
+    if (preciseLocation != null) {
+      deliveryAddress['location'] = preciseLocation.toJson();
+    }
 
     final result = await orderProvider.createOrder(
       restaurantId: cart.currentRestaurant!.id,
@@ -197,11 +241,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildAddressSection(User? user) {
+  Widget _buildAddressSection(user_models.User? user) {
     if (user != null && user.addresses.isNotEmpty) {
       return Column(
         children: [
-          ...user.addresses.map((addr) => RadioListTile<Address>(
+          ...user.addresses.map((addr) => RadioListTile<user_models.Address>(
             value: addr,
             groupValue: _selectedAddress,
             onChanged: (value) => setState(() => _selectedAddress = value),
@@ -261,10 +305,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Column(
         children: [
           RadioListTile<String>(
-            value: 'cash_on_delivery',
-            groupValue: _paymentMethod,
-            onChanged: (value) => setState(() => _paymentMethod = value!),
-            title: const Text('Cash on Delivery'),
+    value: 'cash',
+    groupValue: _paymentMethod,
+    onChanged: (value) => setState(() => _paymentMethod = value!),
+    title: const Text('Cash on Delivery'),
             secondary: const Icon(Icons.money, color: AppColors.palmGreen),
           ),
           RadioListTile<String>(

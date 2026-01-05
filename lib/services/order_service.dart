@@ -19,9 +19,7 @@ class OrderService {
           'restaurant': restaurantId,
           'items': items,
           'deliveryAddress': deliveryAddress,
-          'payment': {
-            'method': paymentMethod,
-          },
+          'paymentMethod': paymentMethod,
         },
       );
 
