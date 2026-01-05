@@ -136,59 +136,114 @@ class MenuItemCard extends StatelessWidget {
   }
 
   void _showItemDialog(BuildContext context) {
+    int quantity = 1;
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(menuItem.name),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (menuItem.image.isNotEmpty)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                  child: CachedNetworkImage(
-                    imageUrl: ApiConstants.getImageUrl(menuItem.image),
-                    width: double.infinity,
-                    height: 150,
-                    fit: BoxFit.cover,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text(menuItem.name),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (menuItem.image.isNotEmpty)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    child: CachedNetworkImage(
+                      imageUrl: ApiConstants.getImageUrl(menuItem.image),
+                      width: double.infinity,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-              
-              const SizedBox(height: AppSpacing.md),
-              
-              Text(menuItem.description),
-              
-              const SizedBox(height: AppSpacing.md),
-              
-              if (menuItem.tags.isNotEmpty) ...[
-                Text('Tags:', style: AppTextStyles.h4),
-                const SizedBox(height: 4),
-                Wrap(
-                  spacing: 8,
-                  children: menuItem.tags.map((tag) => Chip(
-                    label: Text(tag, style: TextStyle(fontSize: 12)),
-                    backgroundColor: AppColors.desertSand,
-                  )).toList(),
+                
+                const SizedBox(height: AppSpacing.md),
+                
+                Text(menuItem.description),
+                
+                const SizedBox(height: AppSpacing.md),
+                
+                if (menuItem.tags.isNotEmpty) ...[
+                  Text('Tags:', style: AppTextStyles.h4),
+                  const SizedBox(height: 4),
+                  Wrap(
+                    spacing: 8,
+                    children: menuItem.tags.map((tag) => Chip(
+                      label: Text(tag, style: TextStyle(fontSize: 12)),
+                      backgroundColor: AppColors.desertSand,
+                    )).toList(),
+                  ),
+                ],
+
+                const SizedBox(height: AppSpacing.lg),
+                
+                // Quantity Selector
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Quantity', style: AppTextStyles.h4),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: quantity > 1 ? () => setState(() => quantity--) : null,
+                          icon: const Icon(Icons.remove_circle_outline),
+                          color: AppColors.nileBlue,
+                        ),
+                        Text(
+                          quantity.toString(),
+                          style: AppTextStyles.h4,
+                        ),
+                        IconButton(
+                          onPressed: () => setState(() => quantity++),
+                          icon: const Icon(Icons.add_circle_outline),
+                          color: AppColors.nileBlue,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
-            ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+            ElevatedButton(
+              onPressed: menuItem.isAvailable ? () {
+                Navigator.pop(context);
+                _onAddWithQuantity(context, quantity);
+              } : null,
+              child: Text('Add to Cart • ${AppConstants.currencySymbol} ${(menuItem.price * quantity).toStringAsFixed(2)}'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              onAddToCart();
-            },
-            child: const Text('Add to Cart'),
-          ),
-        ],
+      ),
+    );
+  }
+
+  void _onAddWithQuantity(BuildContext context, int quantity) {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    
+    final cartItem = CartItemModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      menuItemId: menuItem.id,
+      name: menuItem.name,
+      price: menuItem.price,
+      quantity: quantity,
+      image: menuItem.image,
+    );
+
+    cartProvider.addItem(restaurant.id, restaurant, cartItem);
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$quantity x ${menuItem.name} added to cart'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: AppColors.palmGreen,
       ),
     );
   }

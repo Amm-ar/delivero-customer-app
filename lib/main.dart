@@ -13,6 +13,8 @@ import 'providers/locale_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/theme_provider.dart';
+import 'screens/cart/cart_screen.dart';
+import 'screens/checkout/checkout_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +60,14 @@ class DeliveroApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: themeProvider.themeMode,
+            
+            // Routes
+            routes: {
+              '/home': (context) => const HomeScreen(),
+              '/login': (context) => const LoginScreen(),
+              '/cart': (context) => const CartScreen(),
+              '/checkout': (context) => const CheckoutScreen(),
+            },
             
             // Initial route
             home: const AuthWrapper(),

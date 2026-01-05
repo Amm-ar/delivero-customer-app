@@ -34,11 +34,24 @@ class ApiConstants {
   static const Duration receiveTimeout = Duration(seconds: 30);
 
   // Helper to construct image URL safely
-  static String getImageUrl(String imagePath) {
+  static String getImageUrl(String? imagePath) {
+    if (imagePath == null || imagePath.isEmpty) {
+      return '$baseUrl/uploads/default-food.png';
+    }
+    
     if (imagePath.startsWith('http')) return imagePath;
-    String path = imagePath;
+    
+    // Normalize slashes
+    String path = imagePath.replaceAll('\\', '/');
+    
+    // Remove leading slash
     if (path.startsWith('/')) path = path.substring(1);
-    if (!path.startsWith('uploads/')) path = 'uploads/$path';
+    
+    // Ensure uploads/ prefix
+    if (!path.startsWith('uploads/')) {
+      path = 'uploads/$path';
+    }
+    
     return '$baseUrl/$path';
   }
 }

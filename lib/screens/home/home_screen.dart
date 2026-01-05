@@ -296,32 +296,160 @@ class _HomeTabState extends State<HomeTab> {
 }
 
 // Orders Tab
-class OrdersTab extends StatelessWidget {
+class OrdersTab extends StatefulWidget {
   const OrdersTab({super.key});
+
+  @override
+  State<OrdersTab> createState() => _OrdersTabState();
+}
+
+class _OrdersTabState extends State<OrdersTab> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<OrderProvider>(context, listen: false).fetchOrders();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.orders),
+        actions: [
+          IconButton(
+            onPressed: () => Provider.of<OrderProvider>(context, listen: false).fetchOrders(),
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.receipt_long_outlined, size: 80, color: AppColors.gray),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              AppLocalizations.of(context)!.noOrders,
-              style: AppTextStyles.h3.copyWith(color: AppColors.gray),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Start ordering from your favorite restaurants',
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.gray),
-            ),
-          ],
-        ),
+      body: Consumer<OrderProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading && provider.orders.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (provider.errorMessage != null && provider.orders.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(provider.errorMessage!),
+                  ElevatedButton(
+                    onPressed: () => provider.fetchOrders(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (provider.orders.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.receipt_long_outlined, size: 80, color: AppColors.gray),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    AppLocalizations.of(context)!.noOrders,
+                    style: AppTextStyles.h3.copyWith(color: AppColors.gray),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'Start ordering from your favorite restaurants',
+                    style: AppTextStyles.bodyMedium.copyWith(color: AppColors.gray),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            itemCount: provider.orders.length,
+            itemBuilder: (context, index) {
+              final order = provider.orders[index];
+              return Card(
+                margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Order #${order.orderNumber}',
+                            style: AppTextStyles.h4,
+                          ),
+                          _buildStatusChip(order.status),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        order.restaurantName,
+                        style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${order.items.length} items • ${AppConstants.currencySymbol} ${order.pricing.total.toStringAsFixed(2)}',
+                        style: AppTextStyles.bodyMedium,
+                      ),
+                      const Divider(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Placed on ${order.createdAt.toLocal().toString().split('.')[0]}',
+                            style: AppTextStyles.bodySmall,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // TODO: Implement Order Details Screen
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Order details coming soon!'))
+                              );
+                            },
+                            child: const Text('Details'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildStatusChip(String status) {
+    Color color;
+    switch (status) {
+      case 'pending': color = Colors.orange; break;
+      case 'confirmed': color = Colors.blue; break;
+      case 'preparing': color = Colors.indigo; break;
+      case 'on_the_way': color = Colors.purple; break;
+      case 'delivered': color = AppColors.palmGreen; break;
+      case 'cancelled': color = AppColors.error; break;
+      default: color = AppColors.gray;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        border: Border.all(color: color.withOpacity(0.5)),
+      ),
+      child: Text(
+        status.toUpperCase(),
+        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
       ),
     );
   }
