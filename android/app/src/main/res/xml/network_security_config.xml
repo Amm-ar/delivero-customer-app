@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">delivero.com</domain>
+        <domain includeSubdomains="true">api.delivero.com</domain>
+    </domain-config>
+    
+    <!-- Allow debug builds to use localhost -->
+    <debug-overrides>
+        <base-config cleartextTrafficPermitted="true">
+            <trust-anchors>
+                <certificates src="system"/>
+            </trust-anchors>
+        </base-config>
+    </debug-overrides>
+</network-security-config>
